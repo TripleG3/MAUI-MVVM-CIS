@@ -18,7 +18,11 @@ public class PersonsPageViewModel : INotifyPropertyChanged
     }
     public event PropertyChangedEventHandler? PropertyChanged;
     public ICommand NavigateCommand { get; }
-    public ICommand LoadPeopleCommand => new Command(async () => await personService.LoadPersonsAsync());
-    public ICommand SelectPersonCommand => new Command<Person>(personService.SelectPerson);
+    public ICommand LoadPeopleCommand => new BindingCommand<PersonServiceState>(x => personService.LoadPersonsAsync(), x => !State.IsLoading, this);
+    public ICommand SelectPersonCommand => new BindingCommand<Person>(x =>
+    {
+        if (x != null)
+            personService.SelectPerson(x);
+    }, x => !State.IsLoading && State.SelectedPerson != null, this);
     public PersonServiceState State => personService.State;
 }

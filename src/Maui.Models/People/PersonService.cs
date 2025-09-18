@@ -3,8 +3,14 @@ using System.Collections.Immutable;
 
 namespace Maui.App.Models.People;
 
+public interface IState<TState>
+{
+    TState State { get; }
+    event Action<TState> StateChanged;
+}
+
 [Singleton<IPersonService>]
-public class PersonService(IPersonDB personDB) : IPersonService
+public class PersonService(IPersonDB personDB) : IPersonService, IState<PersonServiceState>
 {
     private PersonServiceState state = PersonServiceState.Empty;
 
