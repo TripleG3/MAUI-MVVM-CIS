@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Maui.App.Views.People.PersonsListView"
+             xmlns:app="clr-namespace:Maui.App"
+             xmlns:vm="clr-namespace:Maui.App.ViewModels.People;assembly=Maui.App.ViewModels"
+             xmlns:people="clr-namespace:Maui.App.Models.People;assembly=Maui.App.Models"
+             xmlns:pages="clr-namespace:Maui.App.Views.Pages"
+             app:Ioc.BindingContext="{x:Type vm:PersonsPageViewModel}"
+             x:DataType="{x:Type vm:PersonsPageViewModel}"
+             app:Visual.LoadedCommand="{Binding LoadPeopleCommand}">
+    <Grid>
+        <VerticalStackLayout>
+            <Label Text="Persons Page"
+                   FontSize="24"
+                   FontAttributes="Bold" />
+            <CollectionView ItemsSource="{Binding State.People}"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding State.SelectedPerson, Mode=OneWay}"
+                            SelectionChangedCommand="{Binding SelectPersonCommand}"
+                            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="people:Person">
+                        <Border Padding="10"
+                                Margin="5">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding FirstName}"
+                                       FontSize="18"
+                                       FontAttributes="Bold" />
+                                <Label Text="{Binding LastName}"
+                                       FontSize="18"
+                                       FontAttributes="Bold" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button Text="View Details"
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="{x:Type pages:PersonDetailsPage}" />
+        </VerticalStackLayout>
+        <ContentView IsVisible="{Binding State.IsLoading}"
+                     InputTransparent="{Binding State.IsWorking, Source={StaticResource ReverseBooleanConverter}}"
+                     BackgroundColor="#66000000">
+            <Label Text="Loading"
+                   TextColor="White"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+        </ContentView>
+    </Grid>
+</ContentView>
